@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/font-awesome.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+</head>
+<style>
+    .box{
+        width:80%;
+        float:right;
+    }
+   .box_top span{
+       margin:5px 10px;
+   }
+    .box_top{
+        margin-bottom: 20px;
+    }
+    .box_bottom span{
+        margin:5px 10px;
+    }
+    .box_bottom{
+        margin-bottom: 20px;
+
+    }
+    #left_nav .active{
+        background-color:#8c8c8c;
+    }
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" style="line-height:0px;">租车系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/index">客户查询</a></li>
+                <li  class="active"><a href="/zuling">租赁登记</a></li>
+                <li><a href="/guihuan">归还登记</a></li>
+                <li><a href="/tongji">统计分析</a></li>
+                <li><a href="/leibie">类别档案</a></li>
+                <li><a href="/qiche">汽车档案</a></li>
+                <li><a href="/">退出系统</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+        <div class="collapse navbar-collapse" style="width:200px;float:right;margin-top:-50px;">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="javescript:" >管理员：<span id="guanliyuan"><%=result%></span></a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+    </div>
+</nav>
+<div class="center" style="width:1200px;margin:50px auto;">
+        <div class="content-wrapper" style="width:15%;float:left;display:block;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel">
+                            <table class="table  table-striped" style="width:150px;text-align: center;">
+                                <thead>
+                                <tr>
+                                    <th style="font-size: 20px;text-align: center">类别选择</th>
+                                </tr>
+                                </thead>
+                                <tbody id="left_nav"></tbody>
+                            </table>
+                        </div>
+                  </div>
+             </div>
+          </div>
+        </div>
+        <div class="content-wrapper" style="width:85%;float:right;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">租赁列表</div>
+                            <div class="panel-body">
+                        <div class="panel">
+                            <table class="table  table-striped">
+                                <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>行号</th>
+                                    <th>汽车名称</th>
+                                    <th>每天租金</th>
+                                    <th>可租状态</th>
+                                </tr>
+                                </thead>
+                                <tbody id="cent"></tbody>
+                            </table>
+                        </div>
+                        <div id="pagenavbox"></div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box_top">
+                <span>租赁时长: <input type="text" id="day" value="1">天</span>
+                <span>每天租金： <input type="text" id="qian">元</span>
+                <span>合计金额： <input type="text" id="heji">元</span>
+                <input type="button" value="确定租出" id="zuchu">
+            </div>
+            <div class="box_bottom">
+                <span>客人选择： <select name="xuanze" id="select" style="width:150px;height:30px;"></select></span>
+                <span>客人支付： <input type="text" style="width:450px;" id="keren"></span>
+                <input type="button" value="退出（g）" id="tuichu">
+            </div>
+            <div>
+                <span style="color:red">如果不存在此用户，请点击"+"</span>
+                <a href="/index"><input type="button" value="+"></a>
+            </div>
+        </div>
+</div>
+
+<script type="text/javascript" src="js/PageNav.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script>
+    // 左侧选项渲染
+    $.get("/zulingall",function(data){
+        for(var i=0;i<data.result.length;i++){
+            $tr=$("<tr></tr>");
+            $("<td></td>").html(data.result[i].name).appendTo($tr);
+            $tr.appendTo($("#left_nav"));
+        }
+    });
+    // 下面用户名渲染
+    $.get("/findname",function(data){
+        $.each(data.ddd,function(i,n){
+            $("<option></option>").html(n.name).appendTo($("#select"))
+        })
+    })
+    // 分页
+    $.get("/zulingallqiche?page=1",function(data){
+        new PageNav({
+            boxid : "pagenavbox",
+            page : 1,
+            pageAmount : data.pagezuling,
+            change : function(pagenumber){
+                gotopage(pagenumber);
+            }
+        })
+        gotopage(1);
+    })
+    function gotopage(pagenumber){
+        $("#cent").empty();
+        var chuzu='';
+        $.get("/zulingallqiche?page="+pagenumber,function(data){
+            $.each(data.data,function(i,n){
+                if(n.zhuangtai==0){
+                    chuzu="未出租"
+                }else{
+                    chuzu="已出租"
+                }
+                $tr=$("<tr></tr>");
+                $("<td><input type='radio' data-id='"+n.id+"' name='dd' class='radio' value='haha'></td>").appendTo($tr);
+                $("<td></td>").html(n.id).appendTo($tr);
+                $("<td></td>").html(n.kuanshi).appendTo($tr);
+                $("<td></td>").html(n.jiage).appendTo($tr);
+                $("<td class='zhuangtai'></td>").html(chuzu).appendTo($tr);
+                $tr.appendTo($("#cent"));
+            })
+        })
+    };
+//选项卡
+        $("#left_nav").delegate("td","click",function(){
+            var arr=$(this).html()
+            // console.log(arr)
+             $("#left_nav td").removeClass("active");
+            $(this).addClass("active");
+            $("#cent").empty();
+           $.get("/xuanze/"+arr,function(data){
+               $.each(data.doc,function(i,n){
+                   // console.log(n.id)
+                   if(n.zhuangtai==0){
+                       chuzu="未出租"
+                   }else{
+                       chuzu="已出租"
+                   }
+                   $tr=$("<tr></tr>");
+                   $("<td><input type='radio' data-id='"+n.id+"' name='dd' value='hahaha' class='radio'></td>").appendTo($tr);
+                   $("<td class='id'></td>").html(n.id).appendTo($tr);
+                   $("<td class='kuanshi'></td>").html(n.kuanshi).appendTo($tr);
+                   $("<td></td>").html(n.jiage).appendTo($tr);
+                   $("<td class='chuzu'></td>").html(chuzu).appendTo($tr);
+                   $tr.appendTo($("#cent"));
+               })
+           })
+        })
+    //点击退出
+       $("#tuichu").click(function(){
+           $(".box_top span input").val("");
+           $(".box_bottom span input").val("");
+       })
+    //下面是否租赁
+    $("#cent").delegate("input","click",function(){
+        var id=$(this).attr("data-id")
+        $.get("/dianzhong/"+id,function(data){
+            $.each(data.qian,function(i,n) {
+                $("#qian").val(n.jiage)
+                $("#heji").val(n.jiage+10000)
+                $("#keren").val("租金:"+n.jiage+"押金:"+10000)
+                $("#day").keyup(function(){
+                    // $("#day").val()*n.jiage
+                    $("#qian").val( $("#day").val()*n.jiage)
+                    $("#heji").val( $("#day").val()*n.jiage+10000)
+                    $("#keren").val( "租金:"+$("#day").val()*n.jiage+"押金:"+10000)
+                })
+            })
+        })
+    })
+
+    //点击确认租出
+    var now=0;
+    $("#zuchu").click(function() {
+        var sid=$("input[type=radio]:checked").attr("data-id")
+        var leixing = $('input[type=radio]:checked').parent().parent().children('td').eq(2).html();
+        now++
+
+        var guanliyuan=$("#guanliyuan").html()
+        $.get("/hhh/"+sid,function(data){
+            $.post("/zuchu", {
+                id: sid,
+                name: $("select[name=xuanze]").val(),
+                leibie: leixing,
+                day: $("#day").val(),
+                zujin: $("#qian").val(),
+                yajin: 10000,
+                zhuangtai:1,
+                time:new Date(),
+                guanliyuan:guanliyuan
+            },function(data){
+                if (data.result == 1) {
+                    alert("租出成功！");
+                    window.location.href='/zuling'
+                }else if (data.result == -1) {
+                    alert("该车已出租");
+                }else if (data.result == -2) {
+                    alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+                }
+             })
+        })
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/font-awesome.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+</head>
+<style>
+    .top{
+        float:left;
+        margin:10px;
+    }
+    .bottom{
+        clear:both;
+        float: right;
+    }
+    .bottom input{
+        margin:10px;
+    }
+    .box{
+        width:800px;
+        margin:0 auto;
+    }
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" style="line-height:0px;">租车系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li ><a href="/index">客户查询</a></li>
+                <li><a href="/zuling">租赁登记</a></li>
+                <li class="active"><a href="/guihuan">归还登记</a></li>
+                <li><a href="/tongji">统计分析</a></li>
+                <li><a href="/leibie">类别档案</a></li>
+                <li><a href="/qiche">汽车档案</a></li>
+                <li><a href="javescript:">退出系统</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+        <div class="collapse navbar-collapse" style="width:200px;float:right;margin-top:-50px;">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="javescript:">管理员：<span id="guanliyuan"><%=result%></span></a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+    </div>
+</nav>
+
+<div class="content-wrapper" style="margin-top:100px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">未归还列表</div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>行号</th>
+                                    <th>客户名</th>
+                                    <th>所属类型</th>
+                                    <th>天数</th>
+                                    <th>租金</th>
+                                    <th>押金</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+                        <div id="pagenavbox"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box">
+    <div class="top">
+        已付押金：<input type="text" class="yifu">
+    </div>
+    <div  class="top">
+        应付押金：<input type="text" class="yajin">
+    </div>
+    <div  class="top">
+        找零金额：<input type="text" class="zhaoling">
+    </div>
+    <br>
+    <div class="bottom">
+        <input type="button" value="确定（Q）" id="queding">
+        <input type="button" value="关闭（g）">
+    </div>
+</div>
+
+<script type="text/javascript" src="js/PageNav.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script>
+    // 分页
+    $.get("/guihuandata?page=1",function(data){
+        new PageNav({
+            boxid : "pagenavbox",
+            page : 1,
+            pageAmount : data.pageguihuan,
+            change : function(pagenumber){
+                gotopage(pagenumber);
+            }
+        })
+        gotopage(1);
+    })
+    //分装分页的函数
+    function gotopage(pagenumber){
+        $("#tbody").empty();
+        $.get("/guihuandata?page="+pagenumber,function(data){
+            $.each(data.data,function(i,n){
+                $tr=$("<tr></tr>");
+                $("<td><input type='radio' data-id='"+n.id+"' name='dd'></td>").appendTo($tr);
+                $("<td></td>").html(n.id).appendTo($tr);
+                $("<td></td>").html(n.name).appendTo($tr);
+                $("<td></td>").html(n.leibie).appendTo($tr);
+                $("<td></td>").html(n.day).appendTo($tr);
+                $("<td></td>").html(n.zujin).appendTo($tr);
+                $("<td></td>").html(n.yajin).appendTo($tr);
+                $tr.appendTo($("#tbody"));
+            })
+        })
+    };
+
+    $("#tbody").delegate("input","click",function(){
+
+            var zujin=$(this).parent().parent().children("td").eq(5).html();
+            var zhaoling=$(this).parent().parent().children("td").eq(6).html();
+            var yifu=parseInt(zhaoling) + parseInt(zujin)
+        // console.log(yifu);
+            $(".yifu").val(yifu);
+            $(".yajin").val(zujin);
+            $(".zhaoling").val(zhaoling);
+    })
+    //点击确定
+    $("#queding").click(function(){
+        var sid=$("input[type=radio]:checked").attr("data-id")
+        var name=$("input[type=radio]:checked").parent().parent().children("td").eq(2).html();
+        var leibie=$("input[type=radio]:checked").parent().parent().children("td").eq(3).html();
+        var day=$("input[type=radio]:checked").parent().parent().children("td").eq(4).html();
+        var zujin=$("input[type=radio]:checked").parent().parent().children("td").eq(5).html();
+        var yajin=$("input[type=radio]:checked").parent().parent().children("td").eq(6).html();
+        var guanliyuan=$("#guanliyuan").html()
+        // console.log(guanliyuan)
+        $.get("/guihuanall/"+sid,function(data){
+            if(data.result == 1){
+                alert("归还成功");
+                $("input[type=radio]:checked").parent().parent().remove()
+                $.get("/guihuandele/"+sid,function(data){
+                    if(data.result == 1){
+                     $.post("/guihuanTongji",{
+                         id: sid,
+                         name:name,
+                         leibie: leibie,
+                         day:day,
+                         zujin: zujin,
+                         yajin: yajin,
+                         zhuangtai:1,
+                         time:new Date(),
+                         guanliyuan:guanliyuan
+                     },function(data){
+                         if (data.result == 1) {
+                             console.log("存储成功！");
+                         }else if (data.result == -1) {
+                             console.log("该车已出租");
+                         }else if (data.result == -2) {
+                             console.log("服务器错误！请联系管理员，怎么联系我也不知道！");
+                         }
+                     })
+                    }else{
+                        console.log("服务器错误！");
+                    }
+                })
+            }else{
+                alert("服务器错误！");
+            }
+        })
+
+    })
+</script>
+</body>
+</html>

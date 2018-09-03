@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/font-awesome.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+</head>
+<style>
+  #left_nav  .active{
+        background-color:#8c8c8c;
+    }
+    .canvas{
+        float:left;
+    }
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" style="line-height:0px;">租车系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/index">客户查询</a></li>
+                <li><a href="/zuling">租赁登记</a></li>
+                <li><a href="/guihuan">归还登记</a></li>
+                <li  class="active"><a href="/tongji">统计分析</a></li>
+                <li><a href="/leibie">类别档案</a></li>
+                <li><a href="/qiche">汽车档案</a></li>
+                <li><a href="/">退出系统</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+        <div class="collapse navbar-collapse" style="width:200px;float:right;margin-top:-50px;">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="javescript:">管理员：<%=result%></a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="center" style="width:1200px;margin:50px auto;">
+    <div class="content-wrapper" style="width:15%;float:left;display:block;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <table class="table  table-striped" style="width:150px;text-align: center;">
+                            <thead>
+                            <tr>
+                                <th style="font-size: 20px;text-align: center">类别选择</th>
+                            </tr>
+                            </thead>
+                            <tbody id="left_nav">
+                            <tr>
+                                <td id="zuchu" class="active">租出统计</td>
+                            </tr>
+                            <tr>
+                                <td id="guihuan" >归还统计</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-wrapper" style="width:85%;float:right;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">租赁列表</div>
+                        <div class="panel-body">
+                            <div class="panel">
+                                <table class="table  table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>选择</th>
+                                        <th>行号</th>
+                                        <th>汽车名称</th>
+                                        <th>租赁人</th>
+                                        <th>租赁时长</th>
+                                        <th>每天租金</th>
+                                        <th>总付金额</th>
+                                        <th>租赁(归还)日期</th>
+                                        <th>操作员</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="cent"></tbody>
+                                </table>
+                            </div>
+                            <div id="pagenavbox"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--//图表-->
+<div id="canvas1" style="width: 600px;height:400px;" class="canvas"></div>
+<div id="canvas2" style="width: 600px;height:400px;" class="canvas"></div>
+
+
+<script src="/js/echarts.min.js"></script>
+<script>
+    $.get("/tongjizuchu",function(data){
+        $.each(data.result,function(i,n){
+            var str=n.time.slice(0,10)
+            $tr=$("<tr></tr>");
+            $("<td><input type='radio' data-id='"+n.id+"' name='dd'></td>").appendTo($tr);
+            $("<td></td>").html(n.id).appendTo($tr);
+            $("<td></td>").html(n.name).appendTo($tr);
+            $("<td></td>").html(n.leibie).appendTo($tr);
+            $("<td></td>").html(n.day).appendTo($tr);
+            $("<td></td>").html(n.zujin).appendTo($tr);
+            $("<td></td>").html(n.yajin).appendTo($tr);
+            $("<td></td>").html(str).appendTo($tr);
+            $("<td></td>").html(n.guanliyuan).appendTo($tr);
+            $tr.appendTo($("#cent"));
+        })
+    })
+    $("#zuchu").click(function(){
+        $("#cent").html("")
+        $("#zuchu").addClass("active");
+        $("#guihuan").removeClass("active");
+        $.get("/tongjizuchu",function(data){
+            $.each(data.result,function(i,n){
+                var str=n.time.slice(0,10)
+                // console.log(str)
+                $tr=$("<tr></tr>");
+                $("<td><input type='radio' data-id='"+n.id+"' name='dd'></td>").appendTo($tr);
+                $("<td></td>").html(n.id).appendTo($tr);
+                $("<td></td>").html(n.name).appendTo($tr);
+                $("<td></td>").html(n.leibie).appendTo($tr);
+                $("<td></td>").html(n.day).appendTo($tr);
+                $("<td></td>").html(n.zujin).appendTo($tr);
+                $("<td></td>").html(n.yajin).appendTo($tr);
+                $("<td></td>").html(str).appendTo($tr);
+                $("<td></td>").html(n.guanliyuan).appendTo($tr);
+                $tr.appendTo($("#cent"));
+            })
+        })
+    });
+    $("#guihuan").click(function(){
+        $("#cent").html("")
+        $("#guihuan").addClass("active");
+        $("#zuchu").removeClass("active");
+        $.get("/tongjiguihuan",function(data){
+            $.each(data.result,function(i,n){
+                var str=n.time.slice(0,10)
+                $tr=$("<tr></tr>");
+                $("<td><input type='radio' data-id='"+n.id+"' name='dd'></td>").appendTo($tr);
+                $("<td></td>").html(n.id).appendTo($tr);
+                $("<td></td>").html(n.name).appendTo($tr);
+                $("<td></td>").html(n.leibie).appendTo($tr);
+                $("<td></td>").html(n.day).appendTo($tr);
+                $("<td></td>").html(n.zujin).appendTo($tr);
+                $("<td></td>").html(n.yajin).appendTo($tr);
+                $("<td></td>").html(str).appendTo($tr);
+                $("<td></td>").html(n.guanliyuan).appendTo($tr);
+                $tr.appendTo($("#cent"));
+            })
+        })
+    })
+    //租出次数的统计
+    var arr=[];
+    var brr=[]
+    var datas=[];
+
+    $.get("/tubiao",function(data) {
+        for(var i=0;i<data.data.length;i++){
+            arr.push(data.data[i].kuanshi)
+            // console.log(data.data[i].count);
+            brr.push(data.data[i].count)
+            drr.push(parseInt(data.data[i].count*data.data[i].jiage))
+        }
+        for(var i=0;i<arr.length;i++){
+               datas.push({value:brr[i],name:arr[i]})
+        }
+        var canvas1 = echarts.init(document.getElementById('canvas1'));
+        canvas1.setOption({
+            title: {
+                text: '汽车类型租出情况统计',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'vertical',
+                right: 10,
+                top: 20,
+                bottom: 20,
+                data:arr,
+            },
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['40%', '50%'],
+                    data:datas,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        })
+    });
+    //租出哪款车挣的钱的图表
+    var crr=[];
+    var drr=[];
+    // var list=[];
+    $.get("/tubiaoB",function(data) {
+        for(var i=0;i<data.data.length;i++){
+            crr.push(data.data[i].kuanshi)
+            // console.log(crr)
+
+            drr.push(parseInt(data.data[i].count*data.data[i].jiage))
+            // console.log(drr)
+        }
+        var canvas2 = echarts.init(document.getElementById('canvas2'));
+        canvas2.setOption({
+            title: {
+                text: '汽车类型租出所得金额统计',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data:crr,
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                data:crr,
+            },
+            series: [
+                {
+                    name: '金额',
+                    type: 'bar',
+                    data:drr,
+                },
+            ]
+        })
+    });
+</script>
+</body>
+</html>

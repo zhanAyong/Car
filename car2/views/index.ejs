@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>客户列表</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/font-awesome.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+</head>
+<style>
+    .btn{
+        width:80px;
+        height:40px;
+        margin-left:30px;
+    }
+    #bianji h5{
+        float:left;
+    }
+</style>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" style="line-height:0px;">租车系统</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/index">客户查询</a></li>
+                <li><a href="/zuling">租赁登记</a></li>
+                <li><a href="/guihuan">归还登记</a></li>
+                <li><a href="/tongji">统计分析</a></li>
+                <li><a href="/leibie">类别档案</a></li>
+                <li><a href="/qiche">汽车档案</a></li>
+                <li><a href="/">退出系统</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+        <div class="collapse navbar-collapse" style="width:200px;float:right;margin-top:-50px;">
+            <ul class="nav navbar-nav navbar-right" >
+                <li><a href="javescript:">管理员：<%=result%></a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+ <div style="width: 600px;
+    margin: 10px auto;">
+         <button class="btn btn-info " type="submit" data-toggle="modal" data-target="#myModal">创建</button>
+         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+             <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                         <h4 class="modal-title" id="myModalLabel" style="font-size:12px">创建</h4>
+                     </div>
+                     <div class="modal-body">
+                         <div>
+                             <p>编号：<input type="number" name="id"></p>
+                             <div class="alert alert-danger" role="alert" id="sid_tip" style="display:none;">行号已经存在，请检查！</div>
+                         </div>
+                         <div>
+                             <p>客户名称：<input type="text" name="name" placeholder="请输入姓名"></p>
+                         </div>
+                         <div>
+                             <p>电话：<input type="text" name="tex"></p>
+                         </div>
+                         <div>
+                             <p>住址：<input type="text" name="dizhi"></p>
+                         </div>
+                         <div>
+                             <p>身份证：<input type="text" name="shenfen"></p>
+                         </div>
+                         <div>
+                             <p>驾驶证号码：<input type="text" name="jiashi"></p>
+                         </div>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                         <button type="button" class="btn btn-primary" id="btn1">ok</button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+
+             <button class="btn btn-info " type="submit" data-toggle="modal" data-target="#myModal2" id="modo2">编辑</button>
+             <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                 <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                             <h4 class="modal-title" id="myModalLabel" style="font-size:12px">编辑</h4>
+                         </div>
+                         <div class="modal-body" id="bianji">
+
+                         </div>
+                         <div class="modal-footer">
+                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                             <button type="button" class="btn btn-primary" id="btn2">ok</button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+
+
+             <button class="btn btn-info " type="submit" data-toggle="modal" data-target="#myModal3" id="modo3">详情</button>
+             <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                 <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                             <h4 class="modal-title" id="myModalLabel" style="font-size:12px">详情</h4>
+                         </div>
+                         <div class="modal-body" id="xingqing">
+
+                         </div>
+                         <div class="modal-footer">
+                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+         <button class="btn btn-default" type="submit" style="color:red;" data-toggle="modal" data-target="#myModal4">删除</button>
+     <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+         <div class="modal-dialog" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <h4 class="modal-title" id="myModalLabel">删除</h4>
+                 </div>
+                 <div class="modal-body">
+                     确定要删除该用户？
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                     <button type="button" class="btn btn-primary" id="btn4">确定</button>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+         <button class="btn btn-info " type="button" data-toggle="modal" data-toggle="modal"><a href="/nav" style="color:white;">退出</a></button>
+         <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+             <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                         <h4 class="modal-title" id="myModalLabel">退出</h4>
+                     </div>
+                 </div>
+             </div>
+         </div>
+ </div>
+
+ <div class="content-wrapper">
+     <div class="container">
+         <div class="row">
+             <div class="col-md-12">
+                 <div class="panel panel-default">
+                     <div class="panel-heading">用户列表</div>
+                     <div class="panel-body">
+                         <div class="table-responsive">
+                             <table class="table  table-striped">
+                                 <thead>
+                                     <tr>
+                                         <th>选择</th>
+                                         <th>编号</th>
+                                         <th>客户姓名</th>
+                                         <th>电话</th>
+                                         <th>住址</th>
+                                         <th>身份证号</th>
+                                         <th>驾驶证号</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="tbody"></tbody>
+                             </table>
+                         </div>
+                         <div id="pagenavbox"></div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+
+ <script type="text/javascript" src="js/PageNav.js"></script>
+ <script type="text/javascript" src="js/bootstrap.min.js"></script>
+ <script type="text/javascript">
+     // 分页
+   $.get("/yuangong?page=1",function(data){
+       new PageNav({
+           boxid : "pagenavbox",
+           page : 1,
+           pageAmount : data.pageAmount,
+           change : function(pagenumber){
+               gotopage(pagenumber);
+           }
+       })
+       gotopage(1);
+   })
+
+     function gotopage(pagenumber){
+        $("#tbody").empty();
+        $.get("/yuangong?page="+pagenumber,function(data){
+            $.each(data.result,function(i,n){
+                $tr=$("<tr></tr>");
+                $("<td><input type='radio' data-id='"+n.id+"' name='dd'></td>").appendTo($tr);
+                $("<td></td>").html(n.id).appendTo($tr);
+                $("<td></td>").html(n.name).appendTo($tr);
+                $("<td></td>").html(n.tex).appendTo($tr);
+                $("<td></td>").html(n.dizhi).appendTo($tr);
+                $("<td></td>").html(n.shenfen).appendTo($tr);
+                $("<td></td>").html(n.jiashi).appendTo($tr);
+                $tr.appendTo($("#tbody"));
+            })
+        })
+     }
+     //添加
+     $("#btn1").click(function(){
+         $.post("/yuangong",{
+             id: parseInt($("input[name=id]").val()),
+             name : $("input[name=name]").val(),
+             tex : $("input[name=tex]").val(),
+             dizhi: $("input[name=dizhi]").val(),
+             shenfen : $("input[name=shenfen]").val(),
+             jiashi: $("input[name=jiashi]").val(),
+         },function(data){
+             if(data.result == 1){
+                 alert("提交成功！");
+                 $("input[type=text]").val("");
+             }else if(data.result == -1){
+                 alert("提交失败，编号被占用！");
+             }else if(data.result == -2){
+                 alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+             }
+
+         })
+           $("#myModal").hide();
+            window.location.href='/index'
+     })
+//检测id号
+   $("input[name=id]").blur(function(){
+       var sid = parseInt($("input[name=id]").val());
+       //判断是否是数字 并且是否是空，而且是六位数字
+       if(isNaN(sid) || !sid || !(sid >= 100000 && sid <= 999999)){
+           $("#sid_tip").removeClass("alert-success").addClass("alert-danger").html("请填写正确的学号，编号是6位数字").show();
+           return;
+       }
+
+       $.ajax({
+           type : "propfind",
+           url  : "/yuangong/" + $("input[name=id]").val(),
+           success : function(data){
+               if(!data.result){
+                   $("#sid_tip").removeClass("alert-success").addClass("alert-danger").html("编号被占用").show();
+               }else{
+                   $("#sid_tip").removeClass("alert-danger").addClass("alert-success").html("恭喜！可以使用！").show();
+               }
+           }
+       });
+   });
+   //得到焦点的时候，提示框消失
+   $("input[name=id]").focus(function(){
+       $("#sid_tip").hide();
+   });
+
+   //修改
+   $("#modo2").click(function(){
+       var id=parseInt($("input[type=radio]:checked").attr("data-id"));
+       $("#bianji").html(" ")
+       $.ajax({
+           url:"/yuangong/"+id,
+           type:"get",
+           success:function(data){
+               // console.log(data)
+               if(data.s==-1){
+                   alert("服务器错误Q!");
+               }else{
+                   $("<div></div>").html('<p><h5>编号:</h5><input type="" value="'+data.s.id+'" disabled="disabled" name="id"></p><p><h5>客户姓名:</h5><input value="'+data.s.name+'" name="name"></p><p><h5>电话:</h5><input type="text"  name="tex" value="data.s.tex"></p><p><h5>地址:</h5><input value="'+data.s.dizhi+'" name="dizhi"></p><p><h5>身份证号:</h5><input value="'+data.s.shenfen+'" name="shenfen"></p><p><h5>驾驶证号码:</h5><input value="'+data.s.jiashi+'" name="jiashi"></p>').appendTo($("#bianji"))
+               }
+           }
+       })
+   })
+     $("#btn2").click(function(){
+         $.post("/gfdh",{
+             id: parseInt($("#bianji input[name=id]").val()),
+             name : $("#bianji input[name=name]").val(),
+             tex : $("#bianji input[name=tex]").val(),
+             dizhi: $("#bianji input[name=dizhi]").val(),
+             shenfen : $("#bianji input[name=shenfen]").val(),
+             jiashi: $("#bianji input[name=jiashi]").val(),
+         },function(data){
+             console.log(data)
+             if (data.s==1){
+                 alert("成功")
+                 window.location="/index"
+             }
+         })
+     })
+     //详情
+     $("#modo3").click(function(){
+         $("#xingqing").html("");
+         var id=parseInt($("input[type=radio]:checked").attr("data-id"));
+         $.ajax({
+             url:"/yuangong/"+id,
+             type:"get",
+             success:function(data){
+                 if(data.s==-1){
+                     alert("服务器错误Q!");
+                 }else{
+                     $("<div></div>").html('<p><h5>编号:'+data.s.id+'</h5></p><p><h5>客户姓名:'+data.s.name+'</h5></p><p><h5>电话:'+data.s.tex+'</h5></p><p><h5>地址:'+data.s.dizhi+'</h5></p><p><h5>身份证号:'+data.s.shenfen+'</h5></p><p><h5>驾驶证号码:'+data.s.jiashi+'</h5></p>').appendTo($("#xingqing"))
+                 }
+             }
+         })
+     })
+   //删除
+     $("#btn4").click(function(){
+         var id=parseInt($("input[type=radio]:checked").attr("data-id"));
+         $.ajax({
+             url : "/yuangong/" + id,
+             type : "delete",
+             success : function(data){
+                 if(data.result == 1){
+                     alert("删除成功");
+
+                     $this.parents("tr").remove();
+
+                 }else{
+                     alert("服务器错误！");
+                 }
+             }
+
+         });
+                $("#myModal4").hide();
+                 window.location.href='/index'
+     })
+ </script>
+
+</body>
+</html>
